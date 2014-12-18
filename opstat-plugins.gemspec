@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'opstat-plugins'
-  s.version     = '0.0.4'
+  s.version     = '0.0.3'
   s.date        = '2014-12-12'
   s.summary     = "Opstat plugins"
   s.description = "All opstat plugins"
