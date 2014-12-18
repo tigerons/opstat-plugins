@@ -22,6 +22,10 @@ puts "loading #{file}"
       end
       return parsers
     end
+    def self.load_plugin(name)
+      pwd  = File.dirname(File.expand_path(__FILE__))
+      require pwd + "/plugins/#{name}.rb"
+    end
     module Models
       attr_reader :data_type
       def data_type(type)
