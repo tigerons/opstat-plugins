@@ -10,15 +10,17 @@ puts "loading #{file}"
         require "#{pwd}/app/models/#{filename}"
       end
     end
-    def load_parsers
+    def self.load_parsers(oplogger)
       pwd  = File.dirname(File.expand_path(__FILE__))
+      parsers = {}
       Dir.glob(File.expand_path("#{pwd}/parsers/*.rb")).each do |file|
         require file
 	plugin_name = File.basename(file,'.*')
 	plugin_class = "Opstat::Parsers::#{plugin_name.capitalize}"
 	oplogger.info "loading parser #{plugin_name}"
-        @parsers[plugin_name] ||= Opstat::Common.constantize(plugin_class).new 
+        parsers[plugin_name] ||= Opstat::Common.constantize(plugin_class).new 
       end
+      return parsers
     end
     module Models
       attr_reader :data_type
