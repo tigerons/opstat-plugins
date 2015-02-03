@@ -58,7 +58,7 @@ class Webobjects
         next if prev[:data_hash][instance].nil?
 	tps = ((transactions - prev[:data_hash][instance])/time_diff.to_f).round(3)
 	next if tps < 0
-        temp[instance] = tps
+        temp[instance] = tps.to_f
       end
       temp["timestamp"] = timestamp.to_i * 1000
       chart_data[:tps] << temp

@@ -1,14 +1,8 @@
 module Opstat
 module Plugins
 class Cpu < Task
-  attr_accessor :interval
   CPU_REGEX = /^cpu.*/
   STAT_FILE = "/proc/stat"
-
-  def initialize (name, queue, config)
-    super(name, queue, config)
-    self
-  end
 
   def parse
     report = Array.new

@@ -62,11 +62,11 @@ class Apache2
       statuses = {}
       data.each do |vhost_data|
         current = {:bytes_sent_per_sec => {}, :requests_per_sec => {}}
-        current[:bytes_sent_per_sec]['timestamp'] = vhost_data['timestamp'].to_i * 1000
+        current[:bytes_sent_per_sec]['timestamp'] = vhost_data['timestamp'].to_f * 1000
 	statuses.keys.each do |s|
           current[:bytes_sent_per_sec][s] = 0
 	end
-        current[:requests_per_sec]['timestamp'] = vhost_data['timestamp'].to_i * 1000
+        current[:requests_per_sec]['timestamp'] = vhost_data['timestamp'].to_f * 1000
         statuses.keys.each do |s|
           current[:requests_per_sec][s] = 0
 	end
@@ -90,8 +90,8 @@ class Apache2
 	  end
        
 
-          current[:bytes_sent_per_sec][status] = bytes_sent_per_sec.to_i
-          current[:requests_per_sec][status] = requests_per_sec.to_i
+          current[:bytes_sent_per_sec][status] = bytes_sent_per_sec.to_f
+          current[:requests_per_sec][status] = requests_per_sec.to_f
 	  prev[status] = values
 	  prev[status]['timestamp'] = vhost_data['timestamp']
 	end

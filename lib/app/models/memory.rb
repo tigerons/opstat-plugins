@@ -34,7 +34,6 @@ class Memory
 
     #TODO - get fields from above DRY
     memory_data[:graph_data] = Memory.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).order(:timetamp).all
-    p memory_data
     graphs.each do |graph|
       memory_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
     end

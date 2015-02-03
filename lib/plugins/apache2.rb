@@ -2,7 +2,6 @@ module Opstat
 module Plugins
 
 class Apache2 < Task
-  attr_accessor :interval
 
   def initialize (name, queue, config)
     super(name, queue, config)

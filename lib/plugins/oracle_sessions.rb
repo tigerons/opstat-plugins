@@ -3,7 +3,6 @@ require 'erb'
 module Opstat
 module Plugins
 class OracleSessions < Task
-  attr_accessor :interval
 
   def initialize (name, queue, config)
     super(name, queue, config)

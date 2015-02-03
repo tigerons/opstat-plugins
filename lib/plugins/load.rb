@@ -1,7 +1,6 @@
 module Opstat
 module Plugins
 class Load < Task
-  attr_accessor :interval
   STAT_FILE = "/proc/loadavg"
 
   def initialize (name, queue, config)

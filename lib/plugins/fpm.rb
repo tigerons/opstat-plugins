@@ -2,7 +2,6 @@ pstat
 module Plugins
 class Fpm < Task
   require 'json'
-  attr_accessor :interval
 
   def initialize (name, queue, config)
     super(name, queue, config)

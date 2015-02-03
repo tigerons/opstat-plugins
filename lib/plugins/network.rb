@@ -1,7 +1,6 @@
 module Opstat
 module Plugins
 class Network < Task
-  attr_accessor :interval
   STAT_FILE = "/proc/net/dev"
 
   def initialize (name, queue, config)

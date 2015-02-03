@@ -1,13 +1,6 @@
 module Opstat
 module Plugins
 class Bsdnet < Task
-  attr_accessor :interval
-
-  def initialize (name, queue, config)
-    super(name, queue, config)
-    self
-  end
-
   def parse
     io = IO.popen("pfctl -sinfo")
     report = io.readlines

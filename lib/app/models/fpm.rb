@@ -51,7 +51,7 @@ class Fpm
       temp = {'timestamp' => value[:timestamp]}
       temp[:processes_active] = value[:processes_active]
       temp[:processes_idle] = value[:processes_idle]
-      temp[:accepted_connections_per_sec] = accepted_connections_per_sec
+      temp[:accepted_connections_per_sec] = accepted_connections_per_sec.to_f
       prev = value
       chart_data[:graph_data] << temp
     end

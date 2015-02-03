@@ -54,8 +54,8 @@ class Network
       time_diff = value[:timestamp].to_i - prev[:timestamp].to_i
       chart_data[:graph_data] << {
         "timestamp" => value[:timestamp],
-        "bytes_receive_per_sec" => ((value[:bytes_receive] - prev[:bytes_receive])/time_diff).to_i,
-        "bytes_transmit_per_sec" => ((value[:bytes_transmit] - prev[:bytes_transmit])/time_diff).to_i
+        "bytes_receive_per_sec" => ((value[:bytes_receive] - prev[:bytes_receive])/time_diff).to_f,
+        "bytes_transmit_per_sec" => ((value[:bytes_transmit] - prev[:bytes_transmit])/time_diff).to_f
       }
       prev = value 
       

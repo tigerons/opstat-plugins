@@ -1,7 +1,6 @@
 module Opstat
 module Plugins
 class Diskstats < Task
-  attr_accessor :interval
   STAT_FILE = "/proc/diskstats"
 
   def initialize (name, queue, config)

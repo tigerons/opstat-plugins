@@ -1,7 +1,6 @@
 module Opstat
 module Plugins
 class Memory < Task
-  attr_accessor :interval
   STAT_FILE = "/proc/meminfo"
 
   def initialize (name, queue, config)

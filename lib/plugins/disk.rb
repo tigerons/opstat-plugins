@@ -1,7 +1,6 @@
 module Opstat
 module Plugins
 class Disk < Task
-  attr_accessor :interval
 
   def initialize (name, queue, config)
     super(name, queue, config)
