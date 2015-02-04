@@ -1,14 +1,11 @@
-require 'yaml'
 module Opstat
 module Plugins
-class HpPdu < Task
+class Jvm < Task
   def initialize (name, queue, config)
     super(name, queue, config)
     @snmp_host = config['snmp_host']
     @snmp_port = config['snmp_port']
-    pwd  = File.dirname(File.expand_path(__FILE__))
-    snmp_ids = YAML::load_file("#{pwd}/../data/hp_pdu.yml").keys.join(' ')
-    @snmp_cmd = "snmpget -c public -v2c #{@snmp_host}:#{@snmp_port} #{snmp_ids}"
+    @snmp_cmd = "snmpget -c public -v2c #{@snmp_host}:#{@snmp_port} 1.3.6.1.4.1.42.2.145.3.163.1.1.3.1.0 1.3.6.1.4.1.42.2.145.3.163.1.1.3.2.0 1.3.6.1.4.1.42.2.145.3.163.1.1.3.3.0|cut -f2 -d="
   end
 
   def parse
@@ -21,8 +18,6 @@ class HpPdu < Task
 end
 end
 end
-
-
 #for test
 # check snmp is installed
 # check port is open - snmp is accessible
