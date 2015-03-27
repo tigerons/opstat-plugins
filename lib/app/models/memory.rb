@@ -1,5 +1,6 @@
 class Memory
   include MongoMapper::Document
+  include Graphs::AreaStackedChart
   set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
@@ -11,32 +12,11 @@ class Memory
   end
   
   def self.memory_chart(options)
-    memory_data = {
-               :value_axes => [
-                          { 
-                            :name => "valueAxis1",
-			    :title => 'Memory size in KB',
-                            :position => 'left',
-                            :min_max_multiplier => 1,
-			    :stack_type => 'regular',
-                            :include_guides_in_min_max => 'true',
-			    :grid_alpha => 0.07
-                          }
-                        ],
-               :graph_data => [],
-               :graphs => [],
-	       :title => "Host memory usage",
-	       :category_field => 'timestamp',
-               :title_size => 20
-             }
+    chart = self.chart_structure({:title => "Host memory usage", :value_axis => { :title => "Memory size in KB"}})
 
-    graphs = [:used, :cached, :buffers, :free, :swap_used]
 
     #TODO - get fields from above DRY
-    memory_data[:graph_data] = Memory.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).order(:timetamp).all
-    graphs.each do |graph|
-      memory_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
-    end
+    chart[:graph_data] = Memory.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).order(:timetamp).all
 
     guides = []
     memory_total = Facts.get_fact({:name => "memorytotal", :host_id => options[:host_id]})
@@ -56,17 +36,17 @@ class Memory
       guide[:position] = 'bottom'
       guides << guide
     end
-    memory_data[:guides] = guides
-    memory_data
+    chart[:guides] = guides
+    chart
   end
 
-  def self.graphs_defaults
-    { "Used" => true, "Buffers" => true, "Cached" => true, "SwapUsed" => true }
-  end
-
-  def self.axes_defaults
+  def self.graphs
     {
-      :value_axis => {:title => 'Memory size'}
+      :used => { :line_color => '#FF3300' },
+      :cached => {:line_color => '#FFFF00' },
+      :buffer => {:line_color => '#FFaa33' },
+      :free => {:line_color => '#00FF00' },
+      :swap_used => {:line_color => '#00FFFF' }
     }
   end
 end

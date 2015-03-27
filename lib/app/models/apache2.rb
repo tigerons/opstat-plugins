@@ -1,5 +1,6 @@
 class Apache2
   include MongoMapper::Document
+  include Graphs::AreaStackedChart
   set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
@@ -20,44 +21,9 @@ class Apache2
   def self.vhosts_requests_and_bytes_per_sec(stats)
     charts = []
     stats.each_pair do |vhost,data|
-      chart_bytes = {
-               :value_axes => [
-	                  { 
-			    :name => "valueAxis1",
-	                    :title => "Bytes sent per second",
-			    :position => 'left',
-			    :min_max_multiplier => 1,
-			    :stack_type => 'regular',
-                            :include_guides_in_min_max => 'true',
-			    :grid_alpha => 0.1
-			  }
-			],
-               :graph_data => [],
-	       :category_field => 'timestamp',
-	       :graphs => [],
-               :title => "Bytes sent per second for #{vhost} vhost",
-	       :title_size => 20
-	     }
-      chart_requests = {
-               :value_axes => [
-	                  { 
-			    :name => "valueAxis1",
-	                    :title => "request sent per second",
-			    :position => 'left',
-			    :min_max_multiplier => 1,
-			    :stack_type => 'regular',
-                            :include_guides_in_min_max => 'true',
-			    :grid_alpha => 0.1
-			  }
-			],
-               :graph_data => [],
-	       :category_field => 'timestamp',
-	       :graphs => [],
-               :title => "Request sent per second for #{vhost} vhost",
-	       :title_size => 20
-	     }
+      chart_bytes = self.chart_structure({:title => "Bytes sent per second for #{vhost} vhost", :value_axis => { :title => "Bytes sent per second"}})
+      chart_requests = self.chart_structure({:title => "Request sent per second for #{vhost} vhost", :value_axis => { :title => "request sent per second"}})
 
-    
       prev = {}
       statuses = {}
       data.each do |vhost_data|
@@ -89,7 +55,6 @@ class Apache2
 	    next
 	  end
        
-
           current[:bytes_sent_per_sec][status] = bytes_sent_per_sec.to_f
           current[:requests_per_sec][status] = requests_per_sec.to_f
 	  prev[status] = values
@@ -99,7 +64,7 @@ class Apache2
         chart_bytes[:graph_data] << current[:bytes_sent_per_sec]
       end
       statuses.keys.sort.each do |status|
-	properties =  self.graphs_defaults.select{|a| a[:value_field] == status.to_s}.first
+	properties =  self.statuses_properties.select{|a| a[:value_field] == status.to_s}.first
 	p status
         chart_requests[:graphs] << { :value_axis => 'valueAxis1', :value_field => status.to_s, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
         chart_bytes[:graphs] << { :value_axis => 'valueAxis1', :value_field => status.to_s, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
@@ -109,7 +74,7 @@ class Apache2
     charts
   end
 
-  def self.graphs_defaults
+  def self.statuses_properties
     [
      { :value_field => "200",
        :hidden => false,
@@ -219,15 +184,8 @@ class Apache2
     ]
   end
 
-  def self.axes_defaults
-    {
-      :requests_per_sec => {
-        :value_axis => {:title => 'Requests per second'}
-      },
-      :bytes_sent_per_sec => {
-        :value_axis => {:title => 'Bytes sent per second'} 
-      }
-    }
+  def self.graphs
+    {}
   end
 end
 Apache2.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

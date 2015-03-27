@@ -1,6 +1,6 @@
 class Network 
   include MongoMapper::Document
-  include Graphs::AreaNotStacked
+  include Graphs::AreaNotStackedChart
   set_collection_name "opstat.reports"
   key :timestamp, Time
   key :bytes_receive, Integer
@@ -22,7 +22,7 @@ class Network
   end
 
   def self.interface_chart(interface, values)
-    chart_data = self.chart_structure({:title => "Network traffice for #{interface}", :value_axis => { :title => "Network traffic for #{interface}"}})
+    chart_data = self.chart_structure({:title => "Network traffic for #{interface}", :value_axis => { :title => "Network traffic for #{interface}"}})
     
     prev = nil
     values.each do |value|
