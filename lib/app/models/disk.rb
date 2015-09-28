@@ -1,5 +1,6 @@
 class Disk 
   include MongoMapper::Document
+  include Graphs::AreaStackedChart
   set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
@@ -19,59 +20,26 @@ class Disk
   end
 
   def self.disk_chart(mount, values)
-    chart_data = {
-               :value_axes => [
-	                  { 
-			    :name => "valueAxis1",
-			    :title => 'Disk space usage for #{mount}',
-			    :position => 'left',
-			    :min_max_multiplier => 1,
-			    :stack_type => 'regular',
-                            :include_guides_in_min_max => 'true',
-			    :grid_alpha => 0.1
-			  }
-			],
-               :graph_data => [],
-	       :category_field => 'timestamp',
-	       :graphs => [],
-	       :title => "Disk space usage for #{mount}",
-	       :title_size => 20
-	     }
-
-    graphs = {
-      :block_used => { :line_color => '#FF0000' },
-      :block_free => {:line_color => '#00FF00' }
-    }
-    
-    chart_data[:graph_data] = values
-
-    graphs.each_pair do |graph, properties|
-      #TODO value_axis
-      #TODO merge set values with default
-      ##TODO sort by timestamp
-      chart_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[percents]]%)", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
-    end
-    chart_data
+    chart = self.chart_structure({:title => "Disk space usage for #{mount}", :value_axis => { :title => "Disk usage in KB"}})
+    #TODO - get fields from above DRY
+    chart[:graph_data] = values
+    chart
   end
 
-  def self.graphs_defaults
-    [
-     { :value_field => "block_used",
-       :hidden => false,
-       :line_color => "#FF0000",
-       :line_thickness => 3,
-       :title => "block used"},
-     { :value_field => "block_free",
-       :hidden => false,
-       :line_color => "#00FF00",
-       :line_thickness => 3,
-       :title => "block free"}
-    ]
-  end
-
-  def self.axes_defaults
+  def self.graphs
     {
-      :value_axis => {:title => 'Number of blocks'}
+      :block_used => {
+        :hidden => false,
+        :line_color => "#FF0000",
+        :line_thickness => 3,
+        :title => "block used"
+      },
+      :block_free => { 
+         :hidden => false,
+         :line_color => "#00FF00",
+         :line_thickness => 3,
+         :title => "block free"
+      }
     }
   end
 end

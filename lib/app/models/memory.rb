@@ -13,8 +13,6 @@ class Memory
   
   def self.memory_chart(options)
     chart = self.chart_structure({:title => "Host memory usage", :value_axis => { :title => "Memory size in KB"}})
-
-
     #TODO - get fields from above DRY
     chart[:graph_data] = Memory.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).order(:timetamp).all
 
