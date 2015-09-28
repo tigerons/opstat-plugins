@@ -8,14 +8,14 @@ class Temper < Task
   end
 
   def parse
-    report = []
     temperIO = IO.popen('/usr/bin/temper')
-    report  = temperIO.readlines.to_s
+    report  = temperIO.readlines
     temperIO.close
-    return report
+    return report[0].to_s
   end
 
 end
 end
 end
 #TO CHECK - temper cmd
+

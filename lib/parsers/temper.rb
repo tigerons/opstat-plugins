@@ -7,6 +7,7 @@ module Parsers
     def parse_data(data)
       #TODO - mesg when empty
       temperature = data.split(',')[1].to_f
+    temperature = JSON::parse(data)["temperature_celsius"]
       return [{
 	    :temperature => temperature
       }]

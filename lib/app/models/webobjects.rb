@@ -1,5 +1,6 @@
 class Webobjects
   include MongoMapper::Document
+  include Graphs::AreaStackedChart
   set_collection_name "opstat.reports"
   timestamps!
 
