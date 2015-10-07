@@ -27,6 +27,7 @@ class Webobjects
   end
 
   def self.application_charts(app,stats)
+    chart = self.chart_structure({:title => "Host memory usage", :value_axis => { :title => "Memory size in KB"}})
     prev = nil
     report_data = Hash.new
     @quant = 60
@@ -89,65 +90,15 @@ class Webobjects
     end
     sessions[:graph_data] = chart_data[:sessions]
     tps[:graph_data] = chart_data[:tps]
-    [tps,sessions]
+    return [tps,sessions]
   end
     
   def self.tps_graph(app)
-    return {
-               :value_axes => [
-	                  { 
-			    :name => "valueAxis1",
-			    :title => 'Transactions per sec',
-			    :position => 'left',
-			    :min_max_multiplier => 1,
-			    :stack_type => 'regular',
-                            :include_guides_in_min_max => 'true',
-			    :grid_alpha => 0.1
-			  }
-			],
-               :graph_data => [],
-	       :category_field => 'timestamp',
-	       :graphs => [],
-               :title => "Transactions per sec - #{app} application",
-	       :title_size => 20
-	     }
+    return self.chart_structure({:title => "Transactions per second - #{app} application", :value_axis => { :title => "Transactions/sec"}})
   end
 
   def self.sessions_graph(app)
-    return {
-               :value_axes => [
-	                  { 
-			    :name => "valueAxis1",
-			    :title => 'Number of sessions',
-			    :position => 'left',
-			    :min_max_multiplier => 1,
-			    :stack_type => 'regular',
-                            :include_guides_in_min_max => 'true',
-			    :grid_alpha => 0.1
-			  }
-			],
-               :graph_data => [],
-	       :category_field => 'timestamp',
-	       :graphs => [],
-	       :title => "Number of sessions - #{app} application",
-	       :title_size => 20
-	     }
-  end
-
-  def self.axes_defaults
-    {
-      :sessions => {
-        :value_axis => {:title => 'Sessions'}
-      },
-      :tps => {
-        :value_axis => {:title => 'Transactions per second'}
-      }
-
-    }
-  end
-
-  def self.legend
-    @legend = {}
+    return self.chart_structure({:title => "Number of sessions - #{app} application", :value_axis => { :title => "Number of sessions"}})
   end
 end
 Webobjects.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

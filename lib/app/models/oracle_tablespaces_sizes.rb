@@ -1,5 +1,6 @@
 class OracleTablespacesSizes
   include MongoMapper::Document
+  include Graphs::AreaStackedChart
   set_collection_name "opstat.reports"
   key :timestamp, Time
   timestamps!
@@ -19,59 +20,27 @@ class OracleTablespacesSizes
   end
 
   def self.tablespace_chart(tablespace, values)
-    chart_data = {
-               :value_axes => [
-	                  { 
-			    :name => "valueAxis1",
-			    :title => "Tablespace #{tablespace} space usage",
-			    :position => 'left',
-			    :min_max_multiplier => 1,
-			    :stack_type => 'regular',
-                            :include_guides_in_min_max => 'true',
-			    :grid_alpha => 0.1
-			  }
-			],
-               :graph_data => [],
-	       :category_field => 'timestamp',
-	       :graphs => [],
-	       :title => "Tablespace #{tablespace} space usage",
-	       :title_size => 20
-	     }
-
-    graphs = {
-      :used => { :line_color => '#FF0000' },
-      :free => {:line_color => '#00FF00' }
-    }
-    
-    chart_data[:graph_data] = values
-
-    graphs.each_pair do |graph, properties|
-      #TODO value_axis
-      #TODO merge set values with default
-      ##TODO sort by timestamp
-      chart_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[percents]]%)", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.1, :graph_type => 'line' }
-    end
-    chart_data
+    chart = self.chart_structure({:title => "Tablespace #{tablespace} space usage", :value_axis => { :title => "Size in bytes"}})
+    chart[:graph_data] = values
+    return chart
   end
 
-  def self.graphs_defaults
-    [
-     { :value_field => "used",
-       :hidden => false,
-       :line_color => "#FF0000",
-       :line_thickness => 3,
-       :title => "Bytes used"},
-     { :value_field => "free",
-       :hidden => false,
-       :line_color => "#00FF00",
-       :line_thickness => 3,
-       :title => "Bytes free"}
-    ]
-  end
-
-  def self.axes_defaults
+  def self.graphs
     {
-      :value_axis => {:title => 'Bytes'}
+      :used => {
+        :hidden => false,
+        :line_color => "#FF0000",
+        :line_thickness => 3,
+	:balloon_text => "[[title]]: [[value]] ([[percents]]%)",
+        :title => "Bytes used"
+      },
+      :free => {
+        :hidden => false,
+        :line_color => "#00FF00",
+        :line_thickness => 3,
+	:balloon_text => "[[title]]: [[value]] ([[percents]]%)",
+        :title => "Bytes free"
+      }
     }
   end
 end
