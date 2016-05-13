@@ -70,7 +70,13 @@ class Cpu
   end
 
   def self.cpu_aggregate(options)
-    data = Cpu.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timestamp).all
+    require 'influxdb'
+    database = 'opstat'
+    influxdb = InfluxDB::Client.new database
+    data = nil
+    influxdb.query "select * from load where plugin_id='#{options[:plugin_id]}' and host_id='#{options[:host_id]}' and time>='#{options[:start].iso8601}'" do |name, tags, points|
+      data = points
+   end
     data
   end
 

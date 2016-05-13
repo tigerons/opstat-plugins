@@ -23,22 +23,22 @@ class Nagios
        :services_critical => {
          :line_color => "#FF0000",
          :hidden => false,
-         :title => "Services with critical errors"},
+         :title => "Services with critical errors"
        },
        :services_warning => {
          :line_color => "#FFFF00",
          :hidden => false,
-         :title => "Services with warnings"},
+         :title => "Services with warnings"
        },
        :services_unknown => {
          :line_color => "#FFaa00",
          :hidden => false,
-         :title => "Services in unknown state"},
+         :title => "Services in unknown state"
        },
        :services_ok => {
          :line_color => "#00FF00",
          :hidden => true,
-         :title => "Services with no problems"}
+         :title => "Services with no problems"
        }
 
      }
