@@ -10,6 +10,7 @@ puts "loading #{file}"
         require "#{pwd}/app/models/#{filename}"
       end
     end
+
     def self.load_parsers(oplogger)
       pwd  = File.dirname(File.expand_path(__FILE__))
       parsers = {}
@@ -22,6 +23,12 @@ puts "loading #{file}"
       end
       return parsers
     end
+
+    def self.load_parser(name)
+      pwd  = File.dirname(File.expand_path(__FILE__))
+      require pwd + "/parsers/#{name}.rb"
+    end
+
     def self.load_plugin(name)
       pwd  = File.dirname(File.expand_path(__FILE__))
       require pwd + "/plugins/#{name}.rb"
