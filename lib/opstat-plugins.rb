@@ -1,3 +1,4 @@
+require 'logging.rb'
 module Opstat
   module Plugins
     def self.load_models
