@@ -6,7 +6,7 @@ module Parsers
     def parse_data(data)
       reports = []
       data.each do |line|
-        if line =~ /(?<cpu_id>\S+)\s+(?<user>\d+)\s+(?<nice>\d+)\s+(?<system>\d+)\s+(?<idle>\d+)\s+(?<iowait>\d+)\s+(?<irq>\d+)\s+(?<softirq>\d+).*/
+        if line =~ /^(?<cpu_id>\cpu\d*)\s+(?<user>\d+)\s+(?<nice>\d+)\s+(?<system>\d+)\s+(?<idle>\d+)\s+(?<iowait>\d+)\s+(?<irq>\d+)\s+(?<softirq>\d+).*/
           reports << {
 	    :cpu_id => $~[:cpu_id],
             :user => $~[:user].to_i,
