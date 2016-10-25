@@ -36,16 +36,7 @@ class Load
     graphs = [ :load_1m, :load_5m, :load_15m ]
 
 #TODO cpu and here - sort by timestamp
-require 'influxdb'
-database = 'opstat'
-influxdb = InfluxDB::Client.new database
-#influxdb.query "select * from load where plugin_id='#{options[:plugin_id]}' and host_id='#{options[:host_id]}' and time>=#{options[:start].to_i}"
-
-
-#    load_data[:graph_data] = Load.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).order(:timetamp).all
-    influxdb.query "select * from load where plugin_id='#{options[:plugin_id]}' and host_id='#{options[:host_id]}' and time>='#{options[:start].iso8601}'" do |name, tags, points|
-    load_data[:graph_data] = points
-   end
+    load_data[:graph_data] = Load.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).order(:timetamp).all
 
     graphs.each do |graph|
       #TODO value_axis
