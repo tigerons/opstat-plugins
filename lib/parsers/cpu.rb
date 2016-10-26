@@ -4,11 +4,12 @@ module Parsers
     include Opstat::Logging
 
     def parse_data(data)
-      reports = []
+      reports = {
+	:cpus => Hash.new
+      }
       data.each do |line|
-        if line =~ /^(?<cpu_id>\cpu\d*)\s+(?<user>\d+)\s+(?<nice>\d+)\s+(?<system>\d+)\s+(?<idle>\d+)\s+(?<iowait>\d+)\s+(?<irq>\d+)\s+(?<softirq>\d+).*/
-          reports << {
-	    :cpu_id => $~[:cpu_id],
+        if line =~ /(?<cpu_id>\S+)\s+(?<user>\d+)\s+(?<nice>\d+)\s+(?<system>\d+)\s+(?<idle>\d+)\s+(?<iowait>\d+)\s+(?<irq>\d+)\s+(?<softirq>\d+).*/
+          reports[:cpus][$~[:cpu_id]] = {
             :user => $~[:user].to_i,
             :nice => $~[:nice].to_i,
             :system => $~[:system].to_i,
@@ -19,7 +20,7 @@ module Parsers
 	  }
         end
       end
-      return reports
+      return [reports]
     end
   end
 end
