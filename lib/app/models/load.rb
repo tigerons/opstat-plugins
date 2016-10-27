@@ -40,7 +40,7 @@ class Load
 
     graphs.each do |graph|
       #TODO value_axis
-      load_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0, :graph_type => 'line' }
+      load_data[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :balloon_text => "[[title]]: ([[value]])", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0, :graph_type => 'line', :title => graph }
     end
     cores_total = Facts.get_fact({:name => "processorcount", :host_id => options[:host_id], :plugin_id => options[:plugin_id]})
     unless cores_total.nil?

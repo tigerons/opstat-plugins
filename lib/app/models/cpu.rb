@@ -43,25 +43,20 @@ class Cpu
     
     prev = nil
     self.cpu_aggregate(options).each do |data|
-      begin
-        next unless data[:cpus].has_key?("cpu")
-      rescue
-        next
-      end
       if prev.nil? then
-        prev = data[:cpus]['cpu']
+        prev = data
         next
       end
       temp = {"timestamp" => data[:timestamp]}
-      graphs.each_key {|g| temp[g] = data[:cpus]['cpu'][g] - prev[g]}
+      graphs.each_key {|g| temp[g] = data[g] - prev[g]}
       cpu_utilization[:graph_data] << temp
-      prev = data[:cpus]['cpu']
+      prev = data
     end
 
     graphs.each_pair do |graph, properties|
       #TODO value_axis
       #TODO merge set values with default
-      cpu_utilization[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[percents]]%)", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line' }
+      cpu_utilization[:graphs] << { :value_axis => 'valueAxis1', :value_field => graph, :line_color => properties[:line_color],  :balloon_text => "[[title]]: ([[percents]]%)", :line_thickness => 1, :line_alpha => 1, :fill_alphas => 0.8, :graph_type => 'line', :title => graph}
     end
     cpu_utilization
   end
@@ -70,7 +65,7 @@ class Cpu
   end
 
   def self.cpu_aggregate(options)
-    data = Cpu.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timestamp).all
+    data = Cpu.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :cpu_id => 'cpu', :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timestamp).all
     data
   end
 
