@@ -1,0 +1,9 @@
+Filesystem     Type        Used    Avail  Inodes  IUsed   IFree Mounted on
+/dev/xvda1     ext4     3628152  6021312  655360 188338  467022 /
+udev           devtmpfs       0    10240  507718    270  507448 /dev
+tmpfs          tmpfs      80408   741696  513813    318  513495 /run
+tmpfs          tmpfs          0  2055252  513813      1  513812 /dev/shm
+tmpfs          tmpfs          0     5120  513813      6  513807 /run/lock
+tmpfs          tmpfs          0  2055252  513813     13  513800 /sys/fs/cgroup
+/dev/xvda3     ext4     6555088 17789804 1638400 339852 1298548 /var
+
