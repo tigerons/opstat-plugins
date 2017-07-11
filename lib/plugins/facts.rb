@@ -1,5 +1,5 @@
 #set default FACTERDIR - omit libfacter not found on some systems
-ENV[FACTERDIR] ||= '/usr/lib'
+ENV['FACTERDIR'] ||= '/usr/lib'
 require 'facter'
 
 module Opstat
