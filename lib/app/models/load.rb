@@ -81,12 +81,12 @@ class Load
        :load_5m => {
          :hidden => false,
          :line_color => "#FFFF00",
-         :line_thickness => 3,
+         :line_thickness => 2,
          :title => "Load 5 minutes average"},
        :load_1m => {
          :hidden => false,
          :line_color => "#FFaa00",
-         :line_thickness => 3,
+         :line_thickness => 1,
          :title => "Load 1 minute average"}
      }
   end
