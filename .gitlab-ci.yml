@@ -1,0 +1,16 @@
+before_script:
+  - ruby -v                                   # Print out ruby version for debugging
+  - gem install rspec
+  # Uncomment next line if your rails app needs a JS runtime:
+  # - apt-get update -q && apt-get install nodejs -yqq
+#  - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
+#  - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
+
+rspec:
+  script:
+  - rspec spec
+
+01_create_gem:
+  script:
+    - "gem build opstat-plugins.gemspec"
+    - "cp opstat-plugins-`ruby -e 'require \"./lib/opstat-plugins/version.rb\"; puts Opstat.version'`.gem /home/builds/admin/opstat-plugins"
