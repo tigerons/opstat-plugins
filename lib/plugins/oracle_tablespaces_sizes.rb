@@ -50,7 +50,7 @@ EOF
     oracle_output = IO.popen(@cmd)
     report  = oracle_output.readlines.join
     oracle_output.close
-    logger.debug report
+    oplogger.debug report
     return report
   end
 
