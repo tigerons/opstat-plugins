@@ -12,7 +12,7 @@ class DiskIo
   end
 
   def self.disk_io_charts(options)
-    chart = self.chart_structure({:title => "Host load average", :value_axis => { :title => "Memory size in KB"}})
+    chart = self.chart_structure({:title => "Host load average", :value_axis => { :title => "Memory size in KB"},:include_guides_in_min_max => false})
 
     #CHOOSE HERE which
     # TODO ADD ALL TYPES

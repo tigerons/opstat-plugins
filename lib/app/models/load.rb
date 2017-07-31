@@ -12,7 +12,7 @@ class Load
   end
 
   def self.load_chart(options)
-    chart = self.chart_structure({:title => "Host load average", :value_axis => { :title => "Memory size in KB"}})
+    chart = self.chart_structure({:title => "Host load average", :value_axis => { :title => "Load averages"}, :include_guides_in_min_max => false})
 
     #CHOOSE HERE which
     # TODO ADD ALL TYPES
@@ -22,9 +22,9 @@ class Load
 #TODO cpu and here - sort by timestamp
     chart[:graph_data] = Load.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).order(:timetamp).all
 
-    cores_total = Facts.get_fact({:name => "processorcount", :host_id => options[:host_id], :plugin_id => options[:plugin_id]})
+    cores_total = Facts.get_latest_facts_for_host(options[:host_id])['processors']['count']
     unless cores_total.nil?
-      cores_total = cores_total.value.to_i
+      cores_total = cores_total.to_i
       #TODO - find best way to set guides
       # green zone - OK
       guides = [  {
@@ -36,7 +36,7 @@ class Load
         :line_thickness => 1,
         :dash_length => 5,
         :label => "",
-        :inside => 'true',
+        :inside => false,
         :line_alpha => 1,
         :fill_alpha => 0.1,
         :position => 'bottom'},
@@ -49,20 +49,20 @@ class Load
         :line_thickness => 1,
         :dash_length => 5,
         :label => "",
-        :inside => 'true',
+        :inside => false,
         :line_alpha => 1,
         :fill_alpha => 0.1,
         :position => 'bottom'},
       # red zone - critical
         {:value => cores_total * 2,
-        :to_value => cores_total * 100,
+        :to_value => cores_total * 10,
         :value_axis => 'valueAxis1',
         :line_color => "#FF0000",
         :fill_color => "#FF0000",
         :line_thickness => 1,
         :dash_length => 5,
         :label => "",
-        :inside => 'true',
+        :inside => false,
         :line_alpha => 1,
         :fill_alpha => 0.1,
         :position => 'bottom'}]
