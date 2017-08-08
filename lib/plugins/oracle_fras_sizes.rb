@@ -19,9 +19,9 @@ su - <%= @su_user %> -c 'echo "     set pagesize 10000
                set linesize 150
                column dummy noprint
                column  name    format a60     heading \\\"Path\\\"
-               column  space_limit   format 999999999999    heading \"Total\"
-               column  space_used    format 999999999999   heading \"Used\"
-               column  number_of_files    format 999999999999  heading \"Files\"
+               column  space_limit   format 999999999999999    heading \"Total\"
+               column  space_used    format 999999999999999   heading \"Used\"
+               column  number_of_files    format 999999999999999  heading \"Files\"
 
                select name,
                  space_limit,
