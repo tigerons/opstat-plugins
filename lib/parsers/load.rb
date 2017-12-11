@@ -5,6 +5,8 @@ module Parsers
 
     def parse_data(data)
       data.find{|a| a =~ /^(?<load_1m>\S+)\s+(?<load_5m>\S+)\s+(?<load_15m>\S+)\s+(?<threads_running>\d+)\/(?<threads>\d+).*/}
+      return [] if $~.nil?
+      # TODO add some alert to system - bad input data
       return [{
        :load_1m => $~[:load_1m].to_f,
        :load_5m => $~[:load_5m].to_f,
