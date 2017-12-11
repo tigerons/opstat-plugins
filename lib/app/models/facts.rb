@@ -15,7 +15,7 @@ class Facts
   end
     
   def self.get_latest_facts_for_host(host_id)
-    Facts.last( {:host_id => host_id, :plugin_type => 'facts'})['facts']
+    Facts.where( {:host_id => host_id, :plugin_type => 'facts'}).fields('facts').last
   end
 
   def self.legend

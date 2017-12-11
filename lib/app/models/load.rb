@@ -22,9 +22,9 @@ class Load
 #TODO cpu and here - sort by timestamp
     chart[:graph_data] = Load.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).order(:timetamp).all
 
-    cores_total = Facts.get_latest_facts_for_host(options[:host_id])['processors']['count']
-    unless cores_total.nil?
-      cores_total = cores_total.to_i
+    host_facts = Facts.get_latest_facts_for_host(options[:host_id])
+    unless host_facts.nil?
+      cores_total = host_facts['facts']['processors']['count']
       #TODO - find best way to set guides
       # green zone - OK
       guides = [  {

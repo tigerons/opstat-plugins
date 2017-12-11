@@ -17,8 +17,9 @@ class Memory
     chart[:graph_data] = Memory.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).order(:timetamp).all
 
     guides = []
-    memory_total_bytes = Facts.get_latest_facts_for_host(options[:host_id])['memory']['system']['total_bytes']
-    unless memory_total_bytes.nil?
+    host_facts = Facts.get_latest_facts_for_host(options[:host_id])
+    unless host_facts.nil?
+      memory_total_bytes = host_facts['facts']['memory']['system']['total_bytes']
       memory_total_kibytes = memory_total_bytes/1024
       guide = {}
       require 'ruby-units'
@@ -28,7 +29,7 @@ class Memory
       guide[:line_thickness] = 1
       guide[:dash_length] = 5
       guide[:label] = "Total physical memory: #{memory_total_kibytes}KiB (by facter)"
-      guide[:inside] = 'true'
+      guide[:inside] = true
       guide[:line_alpha] = 1
       guide[:position] = 'bottom'
       guides << guide
