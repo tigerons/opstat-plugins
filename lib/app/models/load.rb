@@ -1,11 +1,13 @@
 class Load
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::LineChart
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
+  index({timestamp: 1, hostname: 1, ip_address: 1},{background: true})
 
-  def self.chart_data(options = {})
+  def self.chart_data(options)
     charts = []
     charts << self.load_chart(options)
     return charts
@@ -20,7 +22,11 @@ class Load
     graphs = [ :load_1m, :load_5m, :load_15m ]
 
 #TODO cpu and here - sort by timestamp
-    chart[:graph_data] = Load.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:load_1m, :load_5m, :load_15m, :timestamp).order(:timetamp).all
+    chart[:graph_data] = Load.where(:timestamp.gte => options[:start]).
+                              where(:timestamp.lt => options[:end]).
+			      where(:host_id => options[:host_id]).
+			      where(:plugin_id => options[:plugin_id]).
+			      order_by(timestamp: :asc)
 
     host_facts = Facts.get_latest_facts_for_host(options[:host_id])
     unless host_facts.nil?
@@ -91,5 +97,3 @@ class Load
      }
   end
 end
-
-Load.ensure_index( [ [:timestamp, 1], [:hostname, 1] , [:ip_address,1] ] )

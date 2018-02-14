@@ -1,8 +1,10 @@
 class Webobjects
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::AreaStackedChart
-  set_collection_name "opstat.reports"
-  timestamps!
+  index({timestamp: 1, host_id: 1, plugin_id: 1},{background: true})
+  store_in collection: "opstat.reports"
 
   def self.chart_data(options = {})
     charts = []
@@ -12,7 +14,10 @@ class Webobjects
 
   def self.all_sensors_applications_charts(options = {})
     charts = []
-    Webobjects.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :plugin_type => 'webobjects'} ).order(:timetamp).group_by{|u| u.application_name}.each_pair do |app, stats|
+    Webobjects.where(:timestamp.gte => options[:start]).
+               where(:timestamp.lt => options[:end]).
+	       where(:plugin_type => 'webobjects').
+	       order_by(timestamp: :asc).group_by{|u| u.application_name}.each_pair do |app, stats|
       charts << self.application_charts(app,stats)
     end
     return charts.flatten
@@ -20,7 +25,11 @@ class Webobjects
 
   def self.all_applications_charts(options = {})
     charts = []
-    Webobjects.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timetamp).group_by{|u| u.application_name}.each_pair do |app, stats|
+    Webobjects.where(:timestamp.gte => options[:start]).
+               where(:timestamp.lt => options[:end])
+	       where(:host_id => options[:host_id]).
+	       where(:plugin_id => options[:plugin_id]).
+	       order_by(timestamp: :asc).group_by{|u| u.application_name}.each_pair do |app, stats|
       charts << self.application_charts(app,stats)
     end
     return charts.flatten
@@ -101,4 +110,3 @@ class Webobjects
     return self.chart_structure({:title => "Number of sessions - #{app} application", :value_axis => { :title => "Number of sessions"}})
   end
 end
-Webobjects.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

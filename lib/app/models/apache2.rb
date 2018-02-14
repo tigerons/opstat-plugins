@@ -1,9 +1,11 @@
 class Apache2
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::AreaStackedChart
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
+  index({timestamp: 1, host_id: 1, plugin_id: 1},{background: true})
 
   def self.chart_data(options = {})
     charts = []
@@ -188,4 +190,3 @@ class Apache2
     {}
   end
 end
-Apache2.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

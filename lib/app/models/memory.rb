@@ -1,9 +1,11 @@
 class Memory
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::AreaStackedChart
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
+  index({timestamp: 1, host_id: 1, plugin_id: 1},{background: true} )
 
   def self.chart_data(options = {})
     charts = []
@@ -14,7 +16,10 @@ class Memory
   def self.memory_chart(options)
     chart = self.chart_structure({:title => "Host memory usage", :value_axis => { :title => "Memory size in KB"}})
     #TODO - get fields from above DRY
-    chart[:graph_data] = Memory.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:used, :cached, :buffers, :swap_used, :free, :timestamp).order(:timetamp).all
+    chart[:graph_data] = Memory.where(:timestamp.gte => options[:start]).
+                                where(:timestamp.lt => options[:end]).
+				where(:host_id => options[:host_id]).
+				where(:plugin_id => options[:plugin_id]).order_by(timestamp: :asc)
 
     guides = []
     host_facts = Facts.get_latest_facts_for_host(options[:host_id])
@@ -48,5 +53,3 @@ class Memory
     }
   end
 end
-
-Memory.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

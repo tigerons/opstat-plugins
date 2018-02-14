@@ -1,9 +1,11 @@
 class Disk 
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::AreaStackedChart
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
+  index({timestamp: 1, host_id: 1, plugin_id: 1})
 
   def self.chart_data(options = {})
     charts = []
@@ -13,7 +15,11 @@ class Disk
 
   def self.all_disks_charts(options)
     charts = []
-    Disk.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).fields(:timestamp, :block_used, :block_free, :mount).order(:timetamp).all.group_by{|u| u.mount}.each_pair do |mount, values|
+    Disk.where(:timestamp.gte => options[:start]).
+         where(:timestamp.lt => options[:end]).
+	 where(:host_id => options[:host_id]).
+	 where(:plugin_id => options[:plugin_id]).
+	 order_by(timestamp: :asc).group_by{|u| u.mount}.each_pair do |mount, values|
       charts << self.disk_chart(mount, values)
     end
     return charts
@@ -43,4 +49,3 @@ class Disk
     }
   end
 end
-Disk.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

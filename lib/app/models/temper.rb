@@ -1,9 +1,10 @@
 class Temper
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::AreaNotStackedChart
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
 
   def self.chart_data(options = {})
     charts = []
@@ -23,7 +24,11 @@ class Temper
 
 
     #TODO - get fields from above DRY
-    chart[:graph_data] = Temper.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all
+    chart[:graph_data] = Temper.where(:timestamp.gte => options[:start]).
+                                where(:timestamp.lt => options[:end]).
+				where(:host_id => options[:host_id]).
+				where(:plugin_id => options[:plugin_id]).
+				order_by(timestamp: :asc)
     chart
   end
 

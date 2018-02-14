@@ -1,8 +1,9 @@
 class Fpm
-  include MongoMapper::Document
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
 
   def self.chart_data(options = {})
     charts = self.fpms_charts(options)
@@ -11,7 +12,11 @@ class Fpm
 
   def self.fpms_charts(options = {})
     charts = []
-    Fpm.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all.group_by{|u| u.pool}.each_pair do |pool, values|
+    Fpm.where(:timestamp.gte => options[:start]).
+        where(:timestamp.lt => options[:end]).
+	where(:host_id => options[:host_id]).
+	where(:plugin_id => options[:plugin_id]).
+	order_by(timestamp: :asc).group_by{|u| u.pool}.each_pair do |pool, values|
       charts << self.fpm_chart(pool,values)
     end
     return charts

@@ -1,10 +1,12 @@
 class Bsdnet
 class BytesInOut
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::AreaNotStackedChart
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
+  index({timestamp: 1, host_id: 1, plugin_id: 1},{background: true})
 
   def self.chart_data(options = {})
     charts = []
@@ -17,7 +19,11 @@ class BytesInOut
   def self.bytes_chart(options)
     chart = self.chart_structure({:title => "Network traffic in/out", :value_axis => { :title => "Network traffic [Bytes]"}})
     #TODO - sort by date
-    values = Bsdnet::BytesInOut.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all
+    values = Bsdnet::BytesInOut.where(:timestamp.gte => options[:start]).
+                                where(:timestamp.lt => options[:end]).
+				where(:host_id => options[:host_id]).
+				where(:plugin_id => options[:plugin_id]).
+				order(timestamp: :asc)
     prev = nil
     values.each do |data|
       if prev.nil?
@@ -46,4 +52,3 @@ class BytesInOut
 end
 end
 
-Bsdnet::BytesInOut.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

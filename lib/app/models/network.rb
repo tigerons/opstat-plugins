@@ -1,11 +1,13 @@
 class Network 
-  include MongoMapper::Document
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
   include Graphs::AreaNotStackedChart
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  key :bytes_receive, Integer
-  key :bytes_transmit, Integer
-  timestamps!
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
+  field :bytes_receive, type: Integer
+  field :bytes_transmit, type: Integer
+  index({timestamp: 1, host_id: 1 , plugin_id: 1},{background: true})
 
   def self.chart_data(options = {})
     charts = []
@@ -15,7 +17,11 @@ class Network
 
   def self.all_interfaces_charts(options)
     charts = []
-    Network.where( {:timestamp => { :$gte => options[:start],:$lt => options[:end]}, :host_id => options[:host_id], :plugin_id => options[:plugin_id] }).order(:timetamp).all.group_by{|u| u.interface}.each_pair do |interface, values|
+    Network.where(:timestamp.gte => options[:start]).
+            where(:timestamp.lt => options[:end]).
+	    where(:host_id => options[:host_id]).
+	    where(:plugin_id => options[:plugin_id]).
+	    order_by(timestamp: :asc).group_by{|u| u.interface}.each_pair do |interface, values|
       charts << self.interface_chart(interface, values)
     end
     return charts
@@ -33,8 +39,8 @@ class Network
       time_diff = value[:timestamp].to_i - prev[:timestamp].to_i
       chart_data[:graph_data] << {
         "timestamp" => value[:timestamp],
-        "bytes_receive_per_sec" => ((value[:bytes_receive] - prev[:bytes_receive])/time_diff).to_i,
-        "bytes_transmit_per_sec" => ((value[:bytes_transmit] - prev[:bytes_transmit])/time_diff).to_i
+        "bytes_receive_per_sec" => ((value[:bytes_receive].to_i - prev[:bytes_receive].to_i)/time_diff).to_i,
+        "bytes_transmit_per_sec" => ((value[:bytes_transmit].to_i - prev[:bytes_transmit].to_i)/time_diff).to_i
       }
       prev = value 
       
@@ -50,4 +56,3 @@ class Network
     }
   end
 end
-Network.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id,1] ] )

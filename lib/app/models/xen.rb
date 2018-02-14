@@ -1,8 +1,10 @@
 class Xen
-  include MongoMapper::Document
-  set_collection_name "opstat.reports"
-  key :timestamp, Time
-  timestamps!
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
+  include Graphs::AreaNotStackedChart
+  store_in collection: "opstat.reports"
+  field :timestamp, type: DateTime
 
 
   def self.chart_data(options = {})
@@ -32,7 +34,12 @@ class Xen
 	     }
     graphs = []
     # TODO - why use periods in this query
-    Xen.where( 'timestamp >= :timestamp and ip_address = :ip_address and hostname = :hostname', {timestamp: options[:start], ip_address: options[:ip_address], hostname: options[:hostname]}).group('UNIX_TIMESTAMP(timestamp) div 60, domain').order(:timestamp).select('FROM_UNIXTIME((UNIX_TIMESTAMP(timestamp) div 60) *60,\'%Y-%m-%d %H:%i:%S\') as period_start, domain,max(memory) as memory').group_by{|u| u.period_start}.each_pair do |period_start, domains|
+    Xen.where(:timestamp.gte => options[:start]).
+        where(:timestamp.lt => options[:end]).
+	where(:ip_address => options[:ip_address]).
+	where(:hostname => options[:hostname]).
+	group('UNIX_TIMESTAMP(timestamp) div 60, domain').
+	order_by(:timestamp).select('FROM_UNIXTIME((UNIX_TIMESTAMP(timestamp) div 60) *60,\'%Y-%m-%d %H:%i:%S\') as period_start, domain,max(memory) as memory').group_by{|u| u.period_start}.each_pair do |period_start, domains|
      tmp = { :year => period_start.to_datetime.to_i * 1000 }
      #TODO sort
      domains.each do |domain|

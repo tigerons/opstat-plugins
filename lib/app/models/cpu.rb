@@ -1,7 +1,9 @@
 class Cpu
-  include MongoMapper::Document
-  set_collection_name "opstat.reports"
-  timestamps!
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
+  include Mongoid::Timestamps
+  store_in collection: "opstat.reports"
+  index({timestamp: 1, host_id: 1, plugin_id: 1},{background: true})
 
   def self.chart_data(options = {})
     charts = []
@@ -40,7 +42,6 @@ class Cpu
       'softirq' => { :line_color => '#FFFF00' },
       'idle' => {:line_color => '#00FF00' }
     }
-    
     prev = nil
     self.cpu_aggregate(options).each do |data|
       if prev.nil? then
@@ -65,7 +66,13 @@ class Cpu
   end
 
   def self.cpu_aggregate(options)
-    data = Cpu.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :cpu_id => 'cpu', :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order(:timestamp).all
+    #data = Cpu.where( { :timestamp => {:$gte => options[:start],:$lt => options[:end]} , :cpu_id => 'cpu', :host_id => options[:host_id], :plugin_id => options[:plugin_id]} ).order_by(timestamp: asc).all
+
+    data = Cpu.where( :timestamp.gte => options[:start]).
+               where( :timestamp.lt => options[:end]).
+               where( :cpu_id => 'cpu').
+	       where( :host_id => options[:host_id]).
+	       where( :plugin_id => options[:plugin_id] ).order_by(timestamp: :asc)
     data
   end
 
@@ -77,4 +84,3 @@ class Cpu
     []
   end
 end
-Cpu.ensure_index( [ [:timestamp, 1], [:host_id, 1] , [:plugin_id, 1]] )
