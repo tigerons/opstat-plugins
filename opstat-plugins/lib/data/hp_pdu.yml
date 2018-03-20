@@ -1,0 +1,191 @@
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.1.1:
+  :description: Voltage Segment 1 PDU A
+  :pdu: A
+  :meter_type: voltage
+  :store_key: segment_1
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.1.2:
+  :description: Voltage Segment 2 PDU A
+  :pdu: A
+  :meter_type: voltage
+  :store_key: segment_2
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.1.3:
+  :description: Voltage Segment 3 PDU A
+  :pdu: A
+  :meter_type: voltage
+  :store_key: segment_3
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.1.4:
+  :description: Voltage Segment 4 PDU A
+  :pdu: A
+  :meter_type: voltage
+  :store_key: segment_4
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.1.5:
+  :description: Voltage Segment 5 PDU A
+  :pdu: A
+  :meter_type: voltage
+  :store_key: segment_5
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.1.6:
+  :description: Voltage Segment 6 PDU A
+  :pdu: A
+  :meter_type: voltage
+  :store_key: segment_6
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.1.1:
+  :description: Current Segment 1   PDU A
+  :pdu: A
+  :meter_type: current
+  :store_key: segment_1
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.1.2:
+  :description: Current Segment 2   PDU A
+  :pdu: A
+  :meter_type: current
+  :store_key: segment_2
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.1.3:
+  :description: Current Segment 3   PDU A
+  :pdu: A
+  :meter_type: current
+  :store_key: segment_3
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.1.4:
+  :description: Current Segment 4   PDU A
+  :pdu: A
+  :meter_type: current
+  :store_key: segment_4
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.1.5:
+  :description: Current Segment 5   PDU A
+  :pdu: A
+  :meter_type: current
+  :store_key: segment_5
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.1.6:
+  :description: Current Segment 6   PDU A
+  :pdu: A
+  :meter_type: current
+  :store_key: segment_6
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.1.1:
+  :description: Load Segement 1 in % PDU A
+  :pdu: A
+  :meter_type: load
+  :store_key: segment_1
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.1.2:
+  :description: Load Segement 2 in % PDU A
+  :pdu: A
+  :meter_type: load
+  :store_key: segment_2
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.1.3:
+  :description: Load Segement 3 in % PDU A
+  :pdu: A
+  :meter_type: load
+  :store_key: segment_3
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.1.4:
+  :description: Load Segement 4 in % PDU A
+  :pdu: A
+  :meter_type: load
+  :store_key: segment_4
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.1.5:
+  :description: Load Segement 5 in % PDU A
+  :pdu: A
+  :meter_type: load
+  :store_key: segment_5
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.1.6:
+  :description: Load Segement 6 in % PDU A
+  :pdu: A
+  :meter_type: load
+  :store_key: segment_6
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.2.1:
+  :description: Voltage Segment 1 PDU B
+  :pdu: B
+  :meter_type: voltage
+  :store_key: segment_1
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.2.2:
+  :description: Voltage Segment 2 PDU B
+  :pdu: B
+  :meter_type: voltage
+  :store_key: segment_2
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.2.3:
+  :description: Voltage Segment 3 PDU B
+  :pdu: B
+  :meter_type: voltage
+  :store_key: segment_3
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.2.4:
+  :description: Voltage Segment 4 PDU B
+  :pdu: B
+  :meter_type: voltage
+  :store_key: segment_4
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.2.5:
+  :description: Voltage Segment 5 PDU B
+  :pdu: B
+  :meter_type: voltage
+  :store_key: segment_5
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.2.2.6:
+  :description: Voltage Segment 6 PDU B
+  :pdu: B
+  :meter_type: voltage
+  :store_key: segment_6
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.2.1:
+  :description: Current Segment 1   PDU B
+  :pdu: B
+  :meter_type: current
+  :store_key: segment_1
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.2.2:
+  :description: Current Segment 2   PDU B
+  :pdu: B
+  :meter_type: current
+  :store_key: segment_2
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.2.3:
+  :description: Current Segment 3   PDU B
+  :pdu: B
+  :meter_type: current
+  :store_key: segment_3
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.2.4:
+  :description: Current Segment 4   PDU B
+  :pdu: B
+  :meter_type: current
+  :store_key: segment_4
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.2.5:
+  :description: Current Segment 5   PDU B
+  :pdu: B
+  :meter_type: current
+  :store_key: segment_5
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.3.2.6:
+  :description: Current Segment 6   PDU B
+  :pdu: B
+  :meter_type: current
+  :store_key: segment_6
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.2.1:
+  :description: Load Segement 1 in % PDU B
+  :pdu: B
+  :meter_type: load
+  :store_key: segment_1
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.2.2:
+  :description: Load Segement 2 in % PDU B
+  :pdu: B
+  :meter_type: load
+  :store_key: segment_2
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.2.3:
+  :description: Load Segement 3 in % PDU B
+  :pdu: B
+  :meter_type: load
+  :store_key: segment_3
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.2.4:
+  :description: Load Segement 4 in % PDU B
+  :pdu: B
+  :meter_type: load
+  :store_key: segment_4
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.2.5:
+  :description: Load Segement 5 in % PDU B
+  :pdu: B
+  :meter_type: load
+  :store_key: segment_5
+SNMPv2-SMI::enterprises.232.165.2.3.2.1.4.2.6:
+  :description: Load Segement 6 in % PDU B
+  :pdu: B
+  :meter_type: load
+  :store_key: segment_6
+SNMPv2-SMI::enterprises.232.165.2.3.1.1.4.1:
+  :description: Total Power PDU A in Watt
+  :pdu: A
+  :meter_type: power
+  :store_key: total
+SNMPv2-SMI::enterprises.232.165.2.3.1.1.4.2:
+  :description: Total Power PDU B in Watt
+  :pdu: B
+  :meter_type: power
+  :store_key: total
+
