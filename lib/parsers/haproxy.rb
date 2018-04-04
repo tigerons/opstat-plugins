@@ -8,7 +8,7 @@ module Parsers
     def parse_data(data_parse)
       csv_records = CSV.parse(data_parse.join, { headers: true, header_converters: :symbol, converters: :all })
 	
-      @hashed_data = csv_records.map { |data| data.to_hash }.last
+      @hashed_data = csv_records.map { |data| data.to_hash }
       begin
 	return [{
 	  :pxname => @hashed_data[:pxname],
