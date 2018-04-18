@@ -12,7 +12,8 @@ module Parsers
       CSV.parse(data_parse, { headers: true, header_converters: :symbol, converters: :all}) do |row|
 	hashed_data = Hash[row.headers[0..-1].zip(row.fields[0..-1])]
       end 
-      return reports << hashed_data.select {|key, value| white_headers.include?(key) } 
+      reports = hashed_data.select {|key, value| white_headers.include?(key) } 
+      return reports 
     end 
   end
 end
