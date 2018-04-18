@@ -6,27 +6,15 @@ module Parsers
     include Opstat::Logging
     
     def parse_data(data_parse)
-      white_headers = %w(svname bin bout)
-      reports = []
-       hashed_data = {}
+      white_headers = [:_pxname, :svname, :qcur, :qmax, :scur, :smax, :slim, :stot, :bin, :bout]
+      hashed_data = {} 
+      reports = [] 
       CSV.parse(data_parse, { headers: true, header_converters: :symbol, converters: :all}) do |row|
-      hashed_data = Hash[row.headers[0..-1].zip(row.fields[0..-1])]
-      reports <<  { 
-	:_pxname => hashed_data[:_pxname],
-	:svname =>  hashed_data[:svname],
-	:qcur => hashed_data[:qcur],
-	:qmax => hashed_data[:qmax],
-	:scur => hashed_data[:scur],
-	:smax => hashed_data[:smax],
-	:slim => hashed_data[:slim],
-	:stot => hashed_data[:stot],
-	:bin => hashed_data[:bin],
-	:bout => hashed_data[:bout]
-       }
-    end
-      return reports
+	hashed_data = Hash[row.headers[0..-1].zip(row.fields[0..-1])]
+      end 
+      return reports << hashed_data.select {|key, value| white_headers.include?(key) } 
+    end 
+  end
 end
 end 
-end
-end
-
+ 
