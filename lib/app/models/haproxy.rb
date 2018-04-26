@@ -25,7 +25,8 @@ class Haproxy
     end
     return charts 
   end 
-
+end
+=begin
   def self.haproxy_chart
     prev = nil
     values.each do |value|
@@ -70,4 +71,4 @@ class Haproxy
     []
   end
 end
-
+=end
