@@ -3,10 +3,10 @@ class Haproxy
   include Mongoid::Attributes::Dynamic
   include Mongoid::Timestamps
   store_in collection: "opstat.reports"
-  field :timestamp, type: DataTime 
+
   field :session_total, type: Integer
   field :session_transmit, type: Integer 
-  index({timestamp: 1, host_id: 1, plugin_id: 1}, {background: true}) 
+  index({host_id: 1, plugin_id: 1}, {background: true}) 
   
   def self.chart_data(options = {})
     charts = []
@@ -14,17 +14,6 @@ class Haproxy
     return charts
   end
 
-  def self.haproxy_charts(options)
-    charts =[] 
-    Haproxy.where( :timestamp.gte => options[:start]).
-            where( :timestamp.lt => options[:end]).
-            where( :host_id => options[:host_id]).
-	    where( :plugin_id => options[:plugin_id] ).order_by(timestamp: :asc)
-  	    order_by(timestamp: :asc).group_by { |u| u.interface}.each_pair do |interface, values|
-      charts << self.haproxy_chart(interface, values)
-    end
-    return charts 
-  end 
 end
 =begin
   def self.haproxy_chart
