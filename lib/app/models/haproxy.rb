@@ -10,7 +10,7 @@ class Haproxy
   
   def self.chart_data(options = {})
     charts = []
-    charts << self.haproxy_chart(options)
+    charts << self.haproxy_charts(options)
     return charts
   end
 
