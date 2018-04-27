@@ -26,7 +26,8 @@ class Haproxy
     end
     return charts
   end
-   
+
+=begin   
  def self.haprox_chart(interface, values)
     chart_data = self.chart_structure({:title => "Network traffic for #{interface}", :value_axis => { :title => "Network traffic for #{interface}"}})
     
@@ -47,7 +48,8 @@ class Haproxy
 
     chart_data
   end
-    
+=end  
+	
   def self.graphs
     {
  
