@@ -15,28 +15,42 @@ class Haproxy
   end
 
 
-  def self.haproxy_chart
+  def self.haproxy_charts(options)
+    charts = []
+   Haproxy.where(:timestamp.gte => options[:start]).
+            where(:timestamp.lt => options[:end]).
+	    where(:host_id => options[:host_id]).
+	    where(:plugin_id => options[:plugin_id]).
+	    order_by(timestamp: :asc).group_by{|u| u.interface}.each_pair do |interface, values|
+      charts << self.interface_chart(interface, values)
+    end
+    return charts
+  end
+   
+ def self.haprox_chart(interface, values)
+    chart_data = self.chart_structure({:title => "Network traffic for #{interface}", :value_axis => { :title => "Network traffic for #{interface}"}})
+    
     prev = nil
     values.each do |value|
-      if prev.nil? then 
-	prev = value
-	next
-      end 
-    time_diff = value[:timestamp].to_i - prev[:timestamp].to_i
-    chart_data[:graph_data] << { 
-      "timestamp" => value[:timestamp],
-      "session_total" => value[:stot].to_i, 
-      "session_per_second" => (value[:stot].to_i - prev[:stot].to_i/time_diff).to_i 
-   }
-    prev = value 
+      if prev.nil? then
+        prev = value
+        next
+      end
+      time_diff = value[:timestamp].to_i - prev[:timestamp].to_i
+      chart_data[:graph_data] << {
+        "timestamp" => value[:timestamp],
+        "sesion_per_second" => ((value[:stot].to_i)/time_diff).to_i
+      }
+      prev = value 
+      
+    end
+
+    chart_data
   end
-    chart_data 
-  end 
-  
     
   def self.graphs
     {
-      :sesion_total => { :line_color => '#FF3300' },
+ 
       :session_per_second => { :line_color => '#00FF00'}, 
       :_pxname => { :line_color => '#00FF00'}, 
       :svname  => { :line_color => '#00FF00'},
