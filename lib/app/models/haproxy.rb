@@ -1,3 +1,4 @@
+=begin
 class Haproxy
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
@@ -22,7 +23,7 @@ class Haproxy
 	    where(:host_id => options[:host_id]).
 	    where(:plugin_id => options[:plugin_id]).
 	    order_by(timestamp: :asc).group_by{|u| u.interface}.each_pair do |interface, values|
-      charts << self.interface_chart(interface, values)
+      charts << self.haproxy_chart(interface, values)
     end
     return charts
   end
