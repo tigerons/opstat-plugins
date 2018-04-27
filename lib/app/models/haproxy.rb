@@ -6,7 +6,7 @@ class Haproxy
   field :timestamp, type: DateTime
   field :session_total, type: Integer
   field :session_transmit, type: Integer 
-  index({host_id: 1, plugin_id: 1}, {background: true}) 
+  index({timestamp: 1, host_id: 1, plugin_id: 1}, {background: true}) 
   
   def self.chart_data(options = {})
     charts = []
@@ -14,7 +14,6 @@ class Haproxy
     return charts
   end
 
-end
 
   def self.haproxy_chart
     prev = nil
