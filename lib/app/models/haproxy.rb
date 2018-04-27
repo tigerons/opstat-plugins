@@ -3,7 +3,7 @@ class Haproxy
   include Mongoid::Attributes::Dynamic
   include Mongoid::Timestamps
   store_in collection: "opstat.reports"
-
+  field :timestamp, type: DateTime
   field :session_total, type: Integer
   field :session_transmit, type: Integer 
   index({host_id: 1, plugin_id: 1}, {background: true}) 
