@@ -15,7 +15,7 @@ class Haproxy
 
   def self.haproxy_charts(options)
     charts = []
-    Disk.where(:timestamp.gte => options[:start]).
+    Haproxy.where(:timestamp.gte => options[:start]).
          where(:timestamp.lt => options[:end]).
          where(:host_id => options[:host_id]).
          where(:plugin_id => options[:plugin_id]).
