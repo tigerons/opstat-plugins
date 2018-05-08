@@ -19,14 +19,14 @@ class Haproxy
          where(:timestamp.lt => options[:end]).
          where(:host_id => options[:host_id]).
          where(:plugin_id => options[:plugin_id]).
-         order_by(timestamp: :asc).group_by{|u| u.svname}.each_pair do |mount, values|
+         order_by(timestamp: :asc).group_by{|u| u._pxname}.each_pair do |haproxy_name, values|
       charts << self.haproxy_chart(mount, values)
     end
     return charts
   end
 
-  def self.haproxy_chart(mount, values)
-    chart = self.chart_structure({:title => "Haproxy #{mount}", :value_axis => { :title => "Haproxy"}})
+  def self.haproxy_chart(haproxy_name, values)
+    chart = self.chart_structure({:title => "Haproxy #{haproxy_name}", :value_axis => { :title => "Haproxy"}})
     #TODO - get fields from above DRY
     chart[:graph_data] = values
     chart
