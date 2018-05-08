@@ -20,7 +20,7 @@ class Haproxy
          where(:host_id => options[:host_id]).
          where(:plugin_id => options[:plugin_id]).
          order_by(timestamp: :asc).group_by{|u| u._pxname}.each_pair do |haproxy_name, values|
-      charts << self.haproxy_chart(mount, values)
+      charts << self.haproxy_chart(haproxy_name, values)
     end
     return charts
   end
