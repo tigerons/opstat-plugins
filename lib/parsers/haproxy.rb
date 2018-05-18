@@ -25,12 +25,13 @@ module Parsers
             else
               backends[:details] = instances.push ( backend.select { |key, value| white_headers.include?(key) } )
             end
-          end
       end
     reports[:backends] << backends
+    end
       }
     return reports
     end
+  end
 end
 end
-end
+
