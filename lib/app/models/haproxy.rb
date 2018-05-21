@@ -5,7 +5,8 @@ class Haproxy
   include Graphs::AreaStackedChart
   store_in collection: "opstat.reports"
   field :timestamp, type: DateTime
-  index({timestamp: 1, host_id: 1, plugin_id: 1})
+  field :stot, type: Integer
+  index({timestamp: 1, host_id: 1, plugin_id: 1}, {background: true})
 
   def self.chart_data(options = {})
     charts = []
@@ -16,27 +17,44 @@ class Haproxy
   def self.haproxy_charts(options)
     charts = []
     Haproxy.where(:timestamp.gte => options[:start]).
-         where(:timestamp.lt => options[:end]).
-         where(:host_id => options[:host_id]).
-         where(:plugin_id => options[:plugin_id]).
-         order_by(timestamp: :asc).group_by{|u| u._pxname}.each_pair do |haproxy_name, values|
-      charts << self.haproxy_chart(haproxy_name, values)
-    end
+            where(:timestamp.lt => options[:end]).
+            where(:host_id => options[:host_id]).
+            where(:plugin_id => options[:plugin_id]).
+              order_by(timestamp: :asc).group_by{ |haproxy| haproxy._pxname }.each_pair do |haproxy_name, values|
+                charts << self.haproxy_chart(haproxy_name, values)
+              end
     return charts
   end
 
   def self.haproxy_chart(haproxy_name, values)
-    chart = self.chart_structure({:title => "Haproxy #{haproxy_name}", :value_axis => { :title => "Haproxy"}})
-    #TODO - get fields from above DRY
-    chart[:graph_data] = values
+    chart = self.chart_structure({:title => "Haproxy #{haproxy_name}", :value_axis => { :title => "Session per second"}})
+    prev = {}
+    chart_data = {}
+    instances = Hash.new
+    values.each do |value|
+      instances[value[:svname]] ||= true
+      unless prev.has_key?(value[:svname]) then
+        prev[value[:svname]] = value
+        next
+      end
+      time_diff = value[:timestamp].to_i - prev[value[:svname]][:timestamp].to_i
+      chart[:graph_data] << {
+      "timestamp" => value[:timestamp].to_i,
+      "session_per_sec" => ((value[:stot].to_i - prev[value[:svname]][:stot].to_i)/time_diff).to_i,
+      }
+      prev[value[:svname]] = value
+    end
     chart
   end
 
+  def self.instances_graph(instances)
+    return self.chart_structure({ :title => "Transactions per second #{instances} instances", :value_axis => { :title => "Number of sessions"}})
+  end
+
   def self.graphs
-    {
-        :stot => { :line_color => '#00FFAC'},
-      :conn_tot => { :line_color => '#C0FF00'},
-      :bin => { :line_color => '#FCA0FF'}
-}
+    { 
+      :session_per_sec => { :line_color => '#00FFAC', :line_thickness => 4, :title => "session_per_second", :hidden => false},
+    }
   end
 end
+
