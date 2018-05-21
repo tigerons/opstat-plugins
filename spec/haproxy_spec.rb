@@ -26,12 +26,11 @@ it 'returns report for single frontend and single backend with one svname' do
    expect(@haproxy_parser.parse_data(haproxy_data)).to eq result_expected
 end
 
-begin it 'return empty array where input data are corrupted' do
+it 'return empty array where input data are corrupted' do
    haproxy_data = File.read('./spec/fixtures/parser_haproxy_corrupted.txt')
    empty = Hash.new
    expect(@haproxy_parser.parse_data(haproxy_data)).to eq empty = { :frontends=>[], :backends=>[] }
 end
     end
   end
-end 
-end 
+end
