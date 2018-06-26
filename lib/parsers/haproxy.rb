@@ -1,7 +1,7 @@
 require 'csv'
+require 'yaml'
 module Opstat
 module Parsers
-
   class Haproxy
     include Opstat::Logging
 
@@ -9,7 +9,8 @@ module Parsers
       white_headers = [ :svname, :qcur, :qmax, :scur, :smax, :slim, :stot, :bin, :bout, :hrsp_1xx, :hrsp_2xx, :hrsp_3xx, :hrsp_4xx, :hrsp_5xx, :hrsp_other, :req_tot, :conn_tot]
       data = CSV.parse(data_parse, { headers: true, header_converters: :symbol, converters: :all}).map{|row| Hash[row.headers[0..-1].zip(row.fields[0..-1])]}.group_by{|row| row[:_pxname]}
       report = []  
-      data.each do |key, value|
+      yaml = []
+      data.each do |key,value|
         case
           when value.first[:svname] == "FRONTEND"
             report <<  {:stats_type => :frontend, :name => value.first[:_pxname], :summary => value.first.select { |key, value| white_headers.include?(key)}}
@@ -26,10 +27,14 @@ module Parsers
 	  report <<  backends
         end
       end
-      return report 
+      puts report 
+      out_file = File.open("haproxy.yml", "w")
+      report.each do |record| 
+          out_file.puts(record.to_yaml)
+      end
+      return report
     end
   end
 end
-end
-
+end 
 
