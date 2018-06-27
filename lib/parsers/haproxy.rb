@@ -10,11 +10,10 @@ module Parsers
       data = CSV.parse(data_parse, { headers: true, header_converters: :symbol, converters: :all}).map{|row| Hash[row.headers[0..-1].zip(row.fields[0..-1])]}.group_by{|row| row[:_pxname]}
       report = []  
       yaml = []
-      data.each do |key,value|
-        case
-          when value.first[:svname] == "FRONTEND"
+      data.each do |key,value| 
+          if value.first[:svname] == "FRONTEND"
             report <<  {:stats_type => :frontend, :name => value.first[:_pxname], :summary => value.first.select { |key, value| white_headers.include?(key)}}
-	  when value.first[:_pxname].to_s.start_with?("backend")
+	  elsif value.first[:_pxname].to_s.start_with?("backend")
             backends = { :stats_type => :backend, :name => value.first[:_pxname] }
             instances = []
             value.each do |backend|
@@ -26,11 +25,6 @@ module Parsers
             end
 	  report <<  backends
         end
-      end
-      puts report 
-      out_file = File.open("haproxy.yml", "w")
-      report.each do |record| 
-          out_file.puts(record.to_yaml)
       end
       return report
     end
