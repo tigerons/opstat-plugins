@@ -17,5 +17,5 @@ class Network < Task
   end
 
 end
-end 
-end 
+end
+end
