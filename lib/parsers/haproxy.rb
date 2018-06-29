@@ -13,17 +13,17 @@ module Parsers
       data.each do |key,value| 
           if value.first[:svname] == "FRONTEND"
             report <<  {:stats_type => :frontend, :name => value.first[:_pxname], :summary => value.first.select { |key, value| white_headers.include?(key)}}
-	  elsif value.first[:_pxname].to_s.start_with?("backend")
+          elsif value.first[:_pxname].to_s.start_with?("backend")
             backends = { :stats_type => :backend, :name => value.first[:_pxname] }
             instances = []
             value.each do |backend|
-              if backend[:svname].to_s.start_with?("BACKEND")
+              if backend[:svname]  == "BACKEND"
                 backends[:summary] =  backend.select { |key, value| white_headers.include?(key) }
               else
                 backends[:details] = instances.push ( backend.select { |key, value| white_headers.include?(key) } )
               end
             end
-	  report <<  backends
+      report <<  backends
         end
       end
       return report
