@@ -41,7 +41,7 @@ class Haproxy
       time_diff = value[:timestamp].to_i - prev[value[:stot]][:timestamp].to_i
       chart[:graph_data] << {
         "timestamp" => value[:timestamp],
-        "session_per_sec" => ((value[:summary][:stot].to_i - prev[value[:stot]][:summary][:stot].to_i)/time_diff).to_i
+        "session_per_sec" => (value[:summary][:stot] - prev[value[:stot]][:summary][:stot]).to_f/time_diff
       }
       prev[value[:stot]] = value
     end
@@ -54,5 +54,4 @@ class Haproxy
     }
   end
 end 
-
 
