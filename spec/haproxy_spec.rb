@@ -63,6 +63,6 @@ it 'return empty array where input data are corrupted' do
    expect(@haproxy_parser.parse_data(haproxy_data)).to eq empty = []
 end
     end
-end
+  end
 end 
 
